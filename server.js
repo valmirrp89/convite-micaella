@@ -2,7 +2,6 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -66,7 +65,7 @@ function parseBody(req) {
     req.on('data', chunk => {
       body += chunk.toString();
       if (body.length > 1e6) { // 1MB limit
-        req.connection.destroy();
+        req.destroy();
         reject(new Error('Payload too large'));
       }
     });
@@ -82,7 +81,8 @@ function parseBody(req) {
 }
 
 const server = http.createServer(async (req, res) => {
-  const parsedUrl = url.parse(req.url, true);
+  const reqHost = req.headers.host || 'localhost';
+  const parsedUrl = new URL(req.url, `http://${reqHost}`);
   const pathname = parsedUrl.pathname;
   const method = req.method;
 
@@ -223,9 +223,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
-  console.log(`🎈 Convite de Festa da Micaella Online!`);
-  console.log(`💻 No seu computador:         http://localhost:${PORT}`);
-  console.log(`📱 No celular (mesmo Wi-Fi):   http://192.168.18.69:${PORT}`);
-  console.log(`⚙️  Painel Administrativo:      http://localhost:${PORT}/admin.html`);
+  console.log(`🎈 Convite de Festa da Micaella rodando na porta ${PORT}!`);
+  console.log(`🌐 Pronto para receber convidados!`);
   console.log(`=======================================================`);
 });
