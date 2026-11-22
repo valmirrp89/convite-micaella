@@ -468,8 +468,8 @@ function initMusicPlayer() {
   const iconEl = document.getElementById('music-note-icon');
   if (!audio || !btn) return;
 
-  // Ajustar volume suave (50%)
-  audio.volume = 0.55;
+  // Ajustar volume suave (60%)
+  audio.volume = 0.6;
 
   function setPlayingState(isPlaying) {
     if (isPlaying) {
@@ -483,11 +483,23 @@ function initMusicPlayer() {
     }
   }
 
+  audio.addEventListener('play', () => setPlayingState(true));
+  audio.addEventListener('pause', () => setPlayingState(false));
+
+  audio.addEventListener('error', () => {
+    console.warn('Áudio não carregado ou arquivo ausente no servidor:', audio.error);
+    setPlayingState(false);
+  });
+
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (audio.paused) {
-      audio.play().then(() => setPlayingState(true)).catch(err => {
-        console.warn('Erro ao reproduzir áudio:', err);
+      audio.play().then(() => {
+        setPlayingState(true);
+        showToast('🎶 Tocando: Saber Quem Sou (Moana)!');
+      }).catch(err => {
+        console.warn('Navegador bloqueou áudio:', err);
+        showToast('Dê um toque na tela para iniciar o som!');
       });
     } else {
       audio.pause();
@@ -495,19 +507,19 @@ function initMusicPlayer() {
     }
   });
 
-  // Tenta iniciar a música suavemente no primeiro toque em qualquer parte da tela
-  const startAutoplay = () => {
+  // Iniciar automaticamente no primeiro clique/toque em qualquer parte da página
+  const unlockAudio = () => {
     if (audio.paused) {
       audio.play().then(() => {
         setPlayingState(true);
       }).catch(() => {});
     }
-    document.removeEventListener('click', startAutoplay);
-    document.removeEventListener('touchstart', startAutoplay);
+    document.removeEventListener('click', unlockAudio);
+    document.removeEventListener('touchstart', unlockAudio);
   };
 
-  document.addEventListener('click', startAutoplay, { once: true });
-  document.addEventListener('touchstart', startAutoplay, { once: true });
+  document.addEventListener('click', unlockAudio, { once: true });
+  document.addEventListener('touchstart', unlockAudio, { once: true });
 }
 
 // Configurar Link do Google Calendar

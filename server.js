@@ -219,8 +219,42 @@ const server = http.createServer(async (req, res) => {
 
     const ext = path.extname(safePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-    res.writeHead(200, { 'Content-Type': contentType });
-    fs.createReadStream(safePath).pipe(res);
+    const totalSize = stats.size;
+    const range = req.headers.range;
+
+    // Suporte a HTTP Range Requests (essencial para streaming de áudio .mp3 no Chrome/Safari)
+    if (range) {
+      const parts = range.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : totalSize - 1;
+
+      if (start >= totalSize || end >= totalSize) {
+        res.writeHead(416, {
+          'Content-Range': `bytes */${totalSize}`,
+          'Access-Control-Allow-Origin': '*'
+        });
+        return res.end();
+      }
+
+      const chunkSize = (end - start) + 1;
+      const fileStream = fs.createReadStream(safePath, { start, end });
+      res.writeHead(206, {
+        'Content-Range': `bytes ${start}-${end}/${totalSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunkSize,
+        'Content-Type': contentType,
+        'Access-Control-Allow-Origin': '*'
+      });
+      fileStream.pipe(res);
+    } else {
+      res.writeHead(200, {
+        'Content-Length': totalSize,
+        'Accept-Ranges': 'bytes',
+        'Content-Type': contentType,
+        'Access-Control-Allow-Origin': '*'
+      });
+      fs.createReadStream(safePath).pipe(res);
+    }
   });
 });
 
