@@ -460,27 +460,84 @@ function closeRsvpModal() {
   if (modal) modal.style.display = 'none';
 }
 
-// Controle de Música da Moana (Any Gabrielly - Saber Quem Sou)
+// Controle de Música da Moana (Foto da Micaella como Botão Play)
 function initMusicPlayer() {
   const audio = document.getElementById('bg-music');
-  const btn = document.getElementById('btn-toggle-music');
+  const topBtn = document.getElementById('btn-toggle-music');
   const textEl = document.getElementById('music-btn-text');
   const iconEl = document.getElementById('music-note-icon');
-  if (!audio || !btn) return;
 
-  // Ajustar volume suave (60%)
-  audio.volume = 0.6;
+  const photoBtn = document.getElementById('photo-music-btn');
+  const photoPlayIcon = document.getElementById('photo-play-icon');
+  const captionPill = document.getElementById('photo-caption-pill');
+  const captionText = document.getElementById('photo-caption-text');
+
+  if (!audio) return;
+
+  // Volume confortável (65%)
+  audio.volume = 0.65;
 
   function setPlayingState(isPlaying) {
     if (isPlaying) {
-      btn.classList.add('playing');
+      if (topBtn) topBtn.classList.add('playing');
       if (textEl) textEl.innerText = 'Pausar Música';
       if (iconEl) iconEl.innerText = '🌺';
+
+      if (photoBtn) photoBtn.classList.add('is-playing');
+      if (photoPlayIcon) photoPlayIcon.innerText = '⏸️';
+      if (captionText) captionText.innerText = 'Tocando: Saber Quem Sou 🎶 (Toque para pausar)';
     } else {
-      btn.classList.remove('playing');
+      if (topBtn) topBtn.classList.remove('playing');
       if (textEl) textEl.innerText = 'Música da Moana 🌺';
       if (iconEl) iconEl.innerText = '🎵';
+
+      if (photoBtn) photoBtn.classList.remove('is-playing');
+      if (photoPlayIcon) photoPlayIcon.innerText = '▶️';
+      if (captionText) captionText.innerText = 'Toque na foto da Micaella para tocar a música! 🌺';
     }
+  }
+
+  function toggleMusic(e) {
+    if (e) e.stopPropagation();
+
+    if (audio.paused) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setPlayingState(true);
+            showToast('🎶 Tocando: Saber Quem Sou (Moana)!');
+          })
+          .catch(err => {
+            console.warn('Erro ao reproduzir áudio:', err);
+            showToast('Dê mais um toque na foto para liberar o áudio!');
+          });
+      }
+    } else {
+      audio.pause();
+      setPlayingState(false);
+    }
+  }
+
+  // Clicar na foto da Micaella toca / pausa
+  if (photoBtn) {
+    photoBtn.addEventListener('click', toggleMusic);
+    photoBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMusic();
+      }
+    });
+  }
+
+  // Clicar na legenda abaixo da foto toca / pausa
+  if (captionPill) {
+    captionPill.addEventListener('click', toggleMusic);
+  }
+
+  // Clicar no botão do topo toca / pausa
+  if (topBtn) {
+    topBtn.addEventListener('click', toggleMusic);
   }
 
   audio.addEventListener('play', () => setPlayingState(true));
@@ -489,25 +546,10 @@ function initMusicPlayer() {
   audio.addEventListener('error', () => {
     console.warn('Áudio não carregado ou arquivo ausente no servidor:', audio.error);
     setPlayingState(false);
+    if (captionText) captionText.innerText = 'Toque na foto para ouvir a música!';
   });
 
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (audio.paused) {
-      audio.play().then(() => {
-        setPlayingState(true);
-        showToast('🎶 Tocando: Saber Quem Sou (Moana)!');
-      }).catch(err => {
-        console.warn('Navegador bloqueou áudio:', err);
-        showToast('Dê um toque na tela para iniciar o som!');
-      });
-    } else {
-      audio.pause();
-      setPlayingState(false);
-    }
-  });
-
-  // Iniciar automaticamente no primeiro clique/toque em qualquer parte da página
+  // Tenta iniciar no primeiro clique em qualquer lugar da tela
   const unlockAudio = () => {
     if (audio.paused) {
       audio.play().then(() => {

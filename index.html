@@ -46,14 +46,28 @@
     <header class="invite-header">
       <div class="badge-tag">🌺 Você foi convidado para essa jornada! 🌊</div>
 
-      <!-- Moldura Tropical com a Foto da Aniversariante -->
+      <!-- Moldura Tropical com a Foto da Aniversariante que funciona como Botão Play -->
       <div class="photo-wrapper">
-        <div class="photo-frame">
-          <img id="child-photo" src="aniversariante.jpg" alt="Foto da Aniversariante" class="child-img">
+        <div class="photo-frame" id="photo-music-btn" role="button" tabindex="0" title="Toque na foto da Micaella para ouvir a música!">
+          <img id="child-photo" src="aniversariante.jpg" alt="Foto da Aniversariante Micaella" class="child-img">
+          
+          <!-- Botão Play sobreposto na foto -->
+          <div class="photo-play-overlay">
+            <div class="play-circle" id="photo-play-circle">
+              <span id="photo-play-icon" class="play-icon">▶️</span>
+            </div>
+          </div>
+
           <div class="frame-decoration decor-top-left">🌺</div>
           <div class="frame-decoration decor-bottom-right">🌴</div>
           <div class="frame-decoration decor-bottom-left">🐚</div>
           <div class="frame-decoration decor-top-right">✨</div>
+        </div>
+
+        <!-- Legenda informativa em destaque -->
+        <div class="photo-caption-pill" id="photo-caption-pill" role="button" tabindex="0">
+          <span class="caption-pulse" id="caption-note-icon">🎶</span>
+          <span id="photo-caption-text">Toque na foto da Micaella para tocar a música! 🌺</span>
         </div>
       </div>
 
