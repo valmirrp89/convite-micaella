@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convite Especial: Moana - Um Mar de Aventuras! 🌺🌊</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-moana">
+  <!-- Canvas para confetes tropicais -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Elementos decorativos tropicais flutuantes da Moana -->
+  <div class="floating-decorations" aria-hidden="true">
+    <span class="float-item b1">🌺</span>
+    <span class="float-item b2">🌊</span>
+    <span class="float-item b3">🌴</span>
+    <span class="float-item b4">🐚</span>
+    <span class="float-item b5">⛵</span>
+    <span class="float-item b6">🐢</span>
+    <span class="float-item b7">🥥</span>
+    <span class="float-item b8">🌺</span>
+  </div>
+
+  <!-- Player Flutuante da Música da Moana -->
+  <div class="music-player-bar" id="music-bar">
+    <button type="button" id="btn-toggle-music" class="music-pill-btn" aria-label="Tocar Música">
+      <span class="music-note-icon" id="music-note-icon">🎵</span>
+      <span class="music-btn-text" id="music-btn-text">Música da Moana 🌺</span>
+      <span class="equalizer" id="equalizer" aria-hidden="true">
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+      </span>
+    </button>
+    <audio id="bg-music" src="moana-musica.mp3" loop preload="auto"></audio>
+  </div>
+
+  <div class="container">
+    <!-- Cabeçalho do Convite Moana -->
+    <header class="invite-header">
+      <div class="badge-tag">🌺 Você foi convidado para essa jornada! 🌊</div>
+
+      <!-- Moldura Tropical com a Foto da Aniversariante -->
+      <div class="photo-wrapper">
+        <div class="photo-frame">
+          <img id="child-photo" src="aniversariante.jpg" alt="Foto da Aniversariante" class="child-img">
+          <div class="frame-decoration decor-top-left">🌺</div>
+          <div class="frame-decoration decor-bottom-right">🌴</div>
+          <div class="frame-decoration decor-bottom-left">🐚</div>
+          <div class="frame-decoration decor-top-right">✨</div>
+        </div>
+      </div>
+
+      <div class="theme-tag">🌊 Tema Moana ⛵</div>
+      <h1 id="event-title" class="title">4º Aniversário da Micaella!</h1>
+      <div class="age-pill" id="event-age">🌺 4 Aninhos! 🌺</div>
+      <p id="event-subtitle" class="subtitle">O horizonte me chama! Venha comemorar os 4 aninhos da Micaella em uma grande aventura tropical com piscina, sol e muita diversão!</p>
+    </header>
+
+    <!-- Contador Regressivo Tropical -->
+    <section class="card countdown-card">
+      <div class="ocean-wave-top" aria-hidden="true"></div>
+      <h2 class="card-subtitle">⛵ O barco zarpa em:</h2>
+      <div class="countdown-grid" id="countdown">
+        <div class="time-box">
+          <span class="time-val" id="days">00</span>
+          <span class="time-label">Dias</span>
+        </div>
+        <div class="time-box">
+          <span class="time-val" id="hours">00</span>
+          <span class="time-label">Horas</span>
+        </div>
+        <div class="time-box">
+          <span class="time-val" id="minutes">00</span>
+          <span class="time-label">Min</span>
+        </div>
+        <div class="time-box">
+          <span class="time-val" id="seconds">00</span>
+          <span class="time-label">Seg</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card do Grupo do WhatsApp: aniver micaella -->
+    <section class="card whatsapp-group-card">
+      <div class="group-card-header">
+        <div class="whatsapp-badge-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.087-.179.182-.077.357.102.174.454.749.975 1.213.673.599 1.24.785 1.414.872.174.087.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.232-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.044.073.044.42-.1.825zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.981-1.306A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+          </svg>
+        </div>
+        <div class="group-card-info">
+          <span class="group-tag">Grupo Oficial no WhatsApp 💬</span>
+          <h3 class="group-name">aniver micaella</h3>
+        </div>
+      </div>
+      <p class="group-description">
+        Entre no grupo para saber quem vai vir, compartilhar recados e acompanhar fotos e novidades da festa!
+      </p>
+      <a href="https://chat.whatsapp.com/FdhFkFGozFEDvBZ2woKcJ0" target="_blank" class="btn btn-whatsapp-group btn-block">
+        👉 Entrar no Grupo do WhatsApp
+      </a>
+    </section>
+
+    <!-- Detalhes do Evento -->
+    <section class="card details-card">
+      <h2 class="section-title">📍 Programação e Local</h2>
+      
+      <div class="info-row">
+        <div class="icon-bubble">📅</div>
+        <div class="info-text">
+          <span class="label">Data da Festa</span>
+          <strong id="display-date">Sábado, 19 de Dezembro de 2026</strong>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="icon-bubble">🏊‍♀️</div>
+        <div class="info-text">
+          <span class="label">Piscina Liberada (se fizer Sol) ☀️</span>
+          <strong id="display-pool-time">A partir das 10:00 da manhã</strong>
+          <span class="hint-text">Tragam roupa de banho e toalha para se refrescar! 🩱🩲</span>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="icon-bubble">🎂</div>
+        <div class="info-text">
+          <span class="label">Corte do Bolo & Parabéns</span>
+          <strong id="display-cake-time">Às 16:00 horas da tarde 🎉</strong>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="icon-bubble">📍</div>
+        <div class="info-text">
+          <span class="label">Endereço</span>
+          <strong id="display-location-name">Rua Ouro Velho, 116</strong>
+          <p id="display-address" class="address-text">Rua Ouro Velho, 116</p>
+        </div>
+      </div>
+
+      <div class="actions-group">
+        <a id="btn-map" href="https://www.google.com/maps/search/?api=1&query=Rua+Ouro+Velho%2C+116" target="_blank" class="btn btn-outline">
+          🗺️ Ver no Google Maps / Waze
+        </a>
+        <button id="btn-copy-address" class="btn btn-ghost" type="button">
+          📋 Copiar Endereço
+        </button>
+      </div>
+
+      <div class="info-box-highlight">
+        <span style="font-size: 1.3rem; margin-right: 4px;">☀️</span>
+        <p id="event-description">
+          Se no dia tiver sol, teremos piscina liberada a partir das 10:00 da manhã! Traga roupa de banho e toalha para se refrescar. O corte do bolo será às 16:00 da tarde! Venha comemorar esses 4 aninhos inesquecíveis com a gente!
+        </p>
+      </div>
+    </section>
+
+    <!-- Formulário de Confirmação (RSVP) -->
+    <section class="card rsvp-card" id="rsvp-section">
+      <div class="rsvp-header">
+        <span class="sparkle-icon">🌺</span>
+        <h2 class="section-title">Confirme sua Tripulação!</h2>
+        <p class="rsvp-subtext">Por favor, confirme até <strong id="rsvp-deadline">05/12/2026</strong> para reservarmos seu lugar a bordo!</p>
+      </div>
+
+      <form id="rsvp-form" class="rsvp-form">
+        <div class="form-group">
+          <label for="guest-name">Seu Nome Completo <span class="required">*</span></label>
+          <input type="text" id="guest-name" name="name" placeholder="Ex: Mariana Silva" required autocomplete="name">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="guest-adults">Adultos (você incluso)</label>
+            <div class="stepper">
+              <button type="button" class="step-btn" onclick="stepVal('guest-adults', -1)">-</button>
+              <input type="number" id="guest-adults" name="adults" value="1" min="1" max="15">
+              <button type="button" class="step-btn" onclick="stepVal('guest-adults', 1)">+</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="guest-children">Crianças</label>
+            <div class="stepper">
+              <button type="button" class="step-btn" onclick="stepVal('guest-children', -1)">-</button>
+              <input type="number" id="guest-children" name="children" value="0" min="0" max="15">
+              <button type="button" class="step-btn" onclick="stepVal('guest-children', 1)">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="guest-companions">Quem vai vir com você? <span style="font-weight: normal; color: #5C768D;">(Nome de todos os adultos e crianças)</span></label>
+          <input type="text" id="guest-companions" name="companionNames" placeholder="Ex: Esposo Carlos, filho Enzo, filha Alice...">
+        </div>
+
+        <div class="form-group">
+          <label for="guest-message">Deixe um Recadinho com Carinho 💖🌺</label>
+          <textarea id="guest-message" name="message" rows="2" placeholder="Deixe seus parabéns ou um recadinho especial para a aniversariante!"></textarea>
+        </div>
+
+        <button type="submit" id="btn-submit-rsvp" class="btn btn-primary btn-block">
+          🌺 Confirmar Presença e Encaminhar no WhatsApp! ⛵
+        </button>
+
+        <div id="rsvp-status-msg" class="status-message" style="display: none;"></div>
+      </form>
+    </section>
+
+    <!-- Lista dos Nomes Confirmados -->
+    <section class="card guests-card">
+      <div class="guests-header">
+        <h2 class="section-title">Tripulantes Confirmados! ⛵🥳</h2>
+        <div class="stats-pills" id="stats-pills">
+          <span class="stat-pill"><strong>0</strong> Confirmados</span>
+          <span class="stat-pill"><strong>0</strong> Adultos</span>
+          <span class="stat-pill"><strong>0</strong> Crianças</span>
+        </div>
+      </div>
+
+      <!-- Campo de Busca -->
+      <div class="search-box">
+        <input type="text" id="search-guest" placeholder="🔍 Buscar nome na lista de convidados...">
+      </div>
+
+      <div id="guests-list" class="guests-list">
+        <div class="loading-state">Carregando convidados confirmados...</div>
+      </div>
+    </section>
+
+    <!-- Compartilhamento & Ações -->
+    <section class="share-section">
+      <button id="btn-share-whatsapp" class="btn btn-whatsapp">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.087-.179.182-.077.357.102.174.454.749.975 1.213.673.599 1.24.785 1.414.872.174.087.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.232-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.044.073.044.42-.1.825zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.981-1.306A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+        </svg>
+        Compartilhar Convite no WhatsApp
+      </button>
+
+      <a id="btn-add-calendar" href="#" target="_blank" class="btn btn-calendar">
+        📅 Salvar no Meu Calendário
+      </a>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="invite-footer">
+      <p>Esperamos você para navegar com a gente! 🌺🌊⛵</p>
+      <div class="footer-links">
+        <a href="admin.html" class="admin-link">⚙️ Painel do Organizador</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Notificação Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Modal de Sucesso com Envio para o Grupo do WhatsApp -->
+  <div id="rsvp-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-icon">🌺🎉</div>
+      <h3 class="modal-title">Presença Confirmada!</h3>
+      <p id="modal-guest-summary" class="modal-text">Oba! Seu nome foi registrado na lista de confirmados da festa!</p>
+      
+      <div class="modal-whatsapp-box">
+        <div class="modal-box-header">
+          <span>📲 Grupo no WhatsApp: <strong>aniver micaella</strong></span>
+        </div>
+        <div class="modal-copy-alert">
+          ✅ <strong>Os nomes de quem vai foram copiados!</strong>
+        </div>
+        <p class="modal-box-desc">
+          Ao clicar no botão verde abaixo, o grupo <strong>"aniver micaella"</strong> vai abrir no seu WhatsApp. Basta <strong>segurar o dedo no campo de mensagem e tocar em COLAR!</strong>
+        </p>
+        <div id="modal-preview-msg" class="modal-preview-text"></div>
+      </div>
+
+      <div class="modal-actions">
+        <a id="btn-modal-open-group" href="https://chat.whatsapp.com/FdhFkFGozFEDvBZ2woKcJ0" target="_blank" class="btn btn-whatsapp btn-block" style="font-size: 1.15rem; padding: 14px;">
+          👉 Abrir o Grupo "aniver micaella" no WhatsApp
+        </a>
+        <a id="btn-modal-send-msg" href="#" target="_blank" class="btn btn-outline btn-block">
+          📲 Ou Escolher Conversa com Texto Já Escrito
+        </a>
+        <button id="btn-modal-copy-msg" type="button" class="btn btn-ghost btn-block">
+          📋 Copiar Nomes Novamente
+        </button>
+        <button type="button" class="btn btn-ghost btn-block" onclick="closeRsvpModal()" style="font-size: 0.9rem; padding: 8px;">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
