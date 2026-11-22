@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body class="theme-moana">
   <!-- Canvas para confetes tropicais -->
@@ -25,19 +25,49 @@
     <span class="float-item b8">🌺</span>
   </div>
 
+  <!-- Player Flutuante da Música da Moana -->
+  <div class="music-player-bar" id="music-bar">
+    <button type="button" id="btn-toggle-music" class="music-pill-btn" aria-label="Tocar Música">
+      <span class="music-note-icon" id="music-note-icon">🎵</span>
+      <span class="music-btn-text" id="music-btn-text">Música da Moana 🌺</span>
+      <span class="equalizer" id="equalizer" aria-hidden="true">
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+      </span>
+    </button>
+    <audio id="bg-music" loop preload="auto">
+      <source src="moana-musica.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
   <div class="container">
     <!-- Cabeçalho do Convite Moana -->
     <header class="invite-header">
       <div class="badge-tag">🌺 Você foi convidado para essa jornada! 🌊</div>
 
-      <!-- Moldura Tropical com a Foto da Aniversariante -->
+      <!-- Moldura Tropical com a Foto da Aniversariante que funciona como Botão Play -->
       <div class="photo-wrapper">
-        <div class="photo-frame">
-          <img id="child-photo" src="aniversariante.jpg" alt="Foto da Aniversariante" class="child-img">
+        <div class="photo-frame" id="photo-music-btn" role="button" tabindex="0" title="Toque na foto da Micaella para ouvir a música!">
+          <img id="child-photo" src="aniversariante.jpg" alt="Foto da Aniversariante Micaella" class="child-img">
+          
+          <!-- Botão Play sobreposto na foto -->
+          <div class="photo-play-overlay">
+            <div class="play-circle" id="photo-play-circle">
+              <span id="photo-play-icon" class="play-icon">▶️</span>
+            </div>
+          </div>
+
           <div class="frame-decoration decor-top-left">🌺</div>
           <div class="frame-decoration decor-bottom-right">🌴</div>
           <div class="frame-decoration decor-bottom-left">🐚</div>
           <div class="frame-decoration decor-top-right">✨</div>
+        </div>
+
+        <!-- Legenda informativa em destaque -->
+        <div class="photo-caption-pill" id="photo-caption-pill" role="button" tabindex="0">
+          <span class="caption-pulse" id="caption-note-icon">🎶</span>
+          <span id="photo-caption-text">Toque na foto da Micaella para tocar a música! 🌺</span>
         </div>
       </div>
 
@@ -255,23 +285,26 @@
       
       <div class="modal-whatsapp-box">
         <div class="modal-box-header">
-          <span>📲 Encaminhar no Grupo: <strong>aniver micaella</strong></span>
+          <span>📲 Grupo no WhatsApp: <strong>aniver micaella</strong></span>
+        </div>
+        <div class="modal-copy-alert">
+          ✅ <strong>Os nomes de quem vai foram copiados!</strong>
         </div>
         <p class="modal-box-desc">
-          O WhatsApp foi aberto para você enviar os nomes de quem vai no grupo! Se não abriu automaticamente, clique no botão verde abaixo:
+          Ao clicar no botão verde abaixo, o grupo <strong>"aniver micaella"</strong> vai abrir no seu WhatsApp. Basta <strong>segurar o dedo no campo de mensagem e tocar em COLAR!</strong>
         </p>
         <div id="modal-preview-msg" class="modal-preview-text"></div>
       </div>
 
       <div class="modal-actions">
-        <a id="btn-modal-send-msg" href="#" target="_blank" class="btn btn-whatsapp btn-block" style="font-size: 1.15rem; padding: 14px;">
-          💬 Enviar Nomes no WhatsApp Agora!
+        <a id="btn-modal-open-group" href="https://chat.whatsapp.com/FdhFkFGozFEDvBZ2woKcJ0" target="_blank" class="btn btn-whatsapp btn-block" style="font-size: 1.15rem; padding: 14px;">
+          👉 Abrir o Grupo "aniver micaella" no WhatsApp
         </a>
-        <a id="btn-modal-open-group" href="https://chat.whatsapp.com/FdhFkFGozFEDvBZ2woKcJ0" target="_blank" class="btn btn-outline btn-block">
-          👥 Acessar Grupo: aniver micaella
+        <a id="btn-modal-send-msg" href="#" target="_blank" class="btn btn-outline btn-block">
+          📲 Ou Escolher Conversa com Texto Já Escrito
         </a>
         <button id="btn-modal-copy-msg" type="button" class="btn btn-ghost btn-block">
-          📋 Copiar Mensagem de Confirmação
+          📋 Copiar Nomes Novamente
         </button>
         <button type="button" class="btn btn-ghost btn-block" onclick="closeRsvpModal()" style="font-size: 0.9rem; padding: 8px;">
           Fechar
@@ -280,6 +313,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>

@@ -35,6 +35,7 @@ function stepVal(inputId, delta) {
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
   initConfetti();
+  initMusicPlayer();
   await loadEvent();
   await loadGuests();
   setupEventListeners();
@@ -413,18 +414,31 @@ function openRsvpModal(guest) {
     previewEl.innerText = msg;
   }
 
-  const waUrl = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+  // Copia o texto automaticamente para a área de transferência
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(msg).then(() => {
+      showToast('📋 Nomes de quem vai copiados! Agora é só colar no grupo.');
+    }).catch(() => {});
+  }
+
+  const groupUrl = eventData.whatsappGroupUrl || 'https://chat.whatsapp.com/FdhFkFGozFEDvBZ2woKcJ0';
+  const shareUrl = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+
+  const groupBtn = document.getElementById('btn-modal-open-group');
+  if (groupBtn) {
+    groupBtn.href = groupUrl;
+  }
 
   const sendBtn = document.getElementById('btn-modal-send-msg');
   if (sendBtn) {
-    sendBtn.href = waUrl;
+    sendBtn.href = shareUrl;
   }
 
   const copyBtn = document.getElementById('btn-modal-copy-msg');
   if (copyBtn) {
     copyBtn.onclick = () => {
       navigator.clipboard.writeText(msg).then(() => {
-        showToast('📋 Mensagem copiada com sucesso! Cole no grupo do WhatsApp.');
+        showToast('📋 Nomes copiados com sucesso! Basta colar no grupo.');
       }).catch(() => {
         showToast('Texto exibido na tela!');
       });
@@ -433,9 +447,9 @@ function openRsvpModal(guest) {
 
   modal.style.display = 'flex';
 
-  // Abre automaticamente o WhatsApp para encaminhar no grupo
+  // Abre diretamente o grupo do WhatsApp da Micaella
   try {
-    window.open(waUrl, '_blank');
+    window.open(groupUrl, '_blank');
   } catch (e) {
     console.log('Navegador bloqueou popup automático, o usuário pode clicar no botão verde');
   }
@@ -444,6 +458,110 @@ function openRsvpModal(guest) {
 function closeRsvpModal() {
   const modal = document.getElementById('rsvp-modal');
   if (modal) modal.style.display = 'none';
+}
+
+// Controle de Música da Moana (Foto da Micaella como Botão Play)
+function initMusicPlayer() {
+  const audio = document.getElementById('bg-music');
+  const topBtn = document.getElementById('btn-toggle-music');
+  const textEl = document.getElementById('music-btn-text');
+  const iconEl = document.getElementById('music-note-icon');
+
+  const photoBtn = document.getElementById('photo-music-btn');
+  const photoPlayIcon = document.getElementById('photo-play-icon');
+  const captionPill = document.getElementById('photo-caption-pill');
+  const captionText = document.getElementById('photo-caption-text');
+
+  if (!audio) return;
+
+  // Volume confortável (65%)
+  audio.volume = 0.65;
+
+  function setPlayingState(isPlaying) {
+    if (isPlaying) {
+      if (topBtn) topBtn.classList.add('playing');
+      if (textEl) textEl.innerText = 'Pausar Música';
+      if (iconEl) iconEl.innerText = '🌺';
+
+      if (photoBtn) photoBtn.classList.add('is-playing');
+      if (photoPlayIcon) photoPlayIcon.innerText = '⏸️';
+      if (captionText) captionText.innerText = 'Tocando: Saber Quem Sou 🎶 (Toque para pausar)';
+    } else {
+      if (topBtn) topBtn.classList.remove('playing');
+      if (textEl) textEl.innerText = 'Música da Moana 🌺';
+      if (iconEl) iconEl.innerText = '🎵';
+
+      if (photoBtn) photoBtn.classList.remove('is-playing');
+      if (photoPlayIcon) photoPlayIcon.innerText = '▶️';
+      if (captionText) captionText.innerText = 'Toque na foto da Micaella para tocar a música! 🌺';
+    }
+  }
+
+  function toggleMusic(e) {
+    if (e) e.stopPropagation();
+
+    if (audio.paused) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setPlayingState(true);
+            showToast('🎶 Tocando: Saber Quem Sou (Moana)!');
+          })
+          .catch(err => {
+            console.warn('Erro ao reproduzir áudio:', err);
+            showToast('Dê mais um toque na foto para liberar o áudio!');
+          });
+      }
+    } else {
+      audio.pause();
+      setPlayingState(false);
+    }
+  }
+
+  // Clicar na foto da Micaella toca / pausa
+  if (photoBtn) {
+    photoBtn.addEventListener('click', toggleMusic);
+    photoBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMusic();
+      }
+    });
+  }
+
+  // Clicar na legenda abaixo da foto toca / pausa
+  if (captionPill) {
+    captionPill.addEventListener('click', toggleMusic);
+  }
+
+  // Clicar no botão do topo toca / pausa
+  if (topBtn) {
+    topBtn.addEventListener('click', toggleMusic);
+  }
+
+  audio.addEventListener('play', () => setPlayingState(true));
+  audio.addEventListener('pause', () => setPlayingState(false));
+
+  audio.addEventListener('error', () => {
+    console.warn('Áudio não carregado ou arquivo ausente no servidor:', audio.error);
+    setPlayingState(false);
+    if (captionText) captionText.innerText = 'Toque na foto para ouvir a música!';
+  });
+
+  // Tenta iniciar no primeiro clique em qualquer lugar da tela
+  const unlockAudio = () => {
+    if (audio.paused) {
+      audio.play().then(() => {
+        setPlayingState(true);
+      }).catch(() => {});
+    }
+    document.removeEventListener('click', unlockAudio);
+    document.removeEventListener('touchstart', unlockAudio);
+  };
+
+  document.addEventListener('click', unlockAudio, { once: true });
+  document.addEventListener('touchstart', unlockAudio, { once: true });
 }
 
 // Configurar Link do Google Calendar

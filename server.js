@@ -198,6 +198,18 @@ const server = http.createServer(async (req, res) => {
   let reqPath = pathname === '/' ? '/index.html' : pathname;
   let safePath = path.normalize(path.join(PUBLIC_DIR, reqPath));
 
+  // Failsafe: se o arquivo foi enviado na raiz do repositório em vez da pasta public
+  if (!fs.existsSync(safePath)) {
+    const rootFallback = path.normalize(path.join(__dirname, reqPath));
+    if (fs.existsSync(rootFallback)) {
+      try {
+        if (fs.statSync(rootFallback).isFile()) {
+          safePath = rootFallback;
+        }
+      } catch (e) {}
+    }
+  }
+
   if (!safePath.startsWith(PUBLIC_DIR)) {
     res.writeHead(403);
     return res.end('Acesso Negado');
