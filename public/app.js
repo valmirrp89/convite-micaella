@@ -21,6 +21,24 @@ let eventData = {
 let guestsList = [];
 let countdownInterval = null;
 
+// Lista de fotos da Micaella para o carrossel e gotas
+const micaellaPhotos = [
+  { src: 'aniversariante.jpg', caption: 'Micaella - 4 Aninhos de muita alegria e luz! 🌺🌊' },
+  { src: 'fotos/foto1.jpg', caption: 'Mandando um beijinho doce e carinhoso! 💖' },
+  { src: 'fotos/foto2.jpg', caption: 'Toda arrumadinha com fitinhas coloridas! 🎀' },
+  { src: 'fotos/foto3.jpg', caption: 'Bebê Micaella de turbante rosa - Amor da vida! 👶🌸' },
+  { src: 'fotos/foto4.jpg', caption: 'Aquele sorrisinho sapeca que encanta a todos! ✨' },
+  { src: 'fotos/foto5.jpg', caption: 'Descansando bem quentinha e charmosa! 🧸' },
+  { src: 'fotos/foto6.jpg', caption: 'Princesa passeando com seu bichinho roxo! 💜' },
+  { src: 'fotos/foto7.jpg', caption: 'Mandando beijinho de boa noite de pijama! 🌙' },
+  { src: 'fotos/foto8.jpg', caption: 'Aniversário de 2 aninhos no fundo do mar! 🎂🌊' },
+  { src: 'fotos/foto9.jpg', caption: 'Descendo a escada toda sorridente com seu ursinho! 🐾' },
+  { src: 'fotos/foto10.jpg', caption: 'Voando alto sob o céu de sombrinhas coloridas! ☂️☀️' }
+];
+
+let currentPhotoIndex = 0;
+let photoSlideshowInterval = null;
+
 // Stepper auxiliar para botões + e -
 function stepVal(inputId, delta) {
   const input = document.getElementById(inputId);
@@ -36,6 +54,9 @@ function stepVal(inputId, delta) {
 document.addEventListener('DOMContentLoaded', async () => {
   initConfetti();
   initMusicPlayer();
+  initPhotoSlideshow();
+  initFallingWaterDrops();
+  initWaterAlbum();
   await loadEvent();
   await loadGuests();
   setupEventListeners();
@@ -562,6 +583,221 @@ function initMusicPlayer() {
 
   document.addEventListener('click', unlockAudio, { once: true });
   document.addEventListener('touchstart', unlockAudio, { once: true });
+}
+
+// Carrossel da Foto Principal com efeito de gota d'água
+function initPhotoSlideshow() {
+  const photoImg = document.getElementById('child-photo');
+  const dotsContainer = document.getElementById('photo-dots');
+  if (!photoImg) return;
+
+  if (dotsContainer) {
+    dotsContainer.innerHTML = micaellaPhotos.map((_, i) => 
+      `<span class="photo-dot ${i === 0 ? 'active' : ''}" onclick="goToPhoto(${i})"></span>`
+    ).join('');
+  }
+
+  function advancePhoto() {
+    currentPhotoIndex = (currentPhotoIndex + 1) % micaellaPhotos.length;
+    showPhotoWithRipple(currentPhotoIndex);
+  }
+
+  photoSlideshowInterval = setInterval(advancePhoto, 3600);
+}
+
+function showPhotoWithRipple(index) {
+  const photoImg = document.getElementById('child-photo');
+  const rippleEl = document.getElementById('water-drop-ripple');
+  const dots = document.querySelectorAll('.photo-dot');
+  if (!photoImg) return;
+
+  currentPhotoIndex = index;
+
+  if (rippleEl) {
+    rippleEl.classList.remove('active');
+    void rippleEl.offsetWidth;
+    rippleEl.classList.add('active');
+  }
+
+  photoImg.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+  photoImg.style.transform = 'scale(0.9)';
+  photoImg.style.opacity = '0.6';
+
+  setTimeout(() => {
+    photoImg.src = micaellaPhotos[currentPhotoIndex].src;
+    photoImg.style.transform = 'scale(1)';
+    photoImg.style.opacity = '1';
+  }, 200);
+
+  dots.forEach((d, i) => {
+    if (i === currentPhotoIndex) d.classList.add('active');
+    else d.classList.remove('active');
+  });
+}
+
+function goToPhoto(index) {
+  if (photoSlideshowInterval) {
+    clearInterval(photoSlideshowInterval);
+    photoSlideshowInterval = setInterval(() => {
+      currentPhotoIndex = (currentPhotoIndex + 1) % micaellaPhotos.length;
+      showPhotoWithRipple(currentPhotoIndex);
+    }, 4500);
+  }
+  showPhotoWithRipple(index);
+}
+
+// =========================================
+// MOTOR DE GOTAS D'ÁGUA CAINDO E ESTOURANDO
+// =========================================
+function initFallingWaterDrops() {
+  const container = document.getElementById('water-drops-container');
+  if (!container) return;
+
+  function spawnWaterDrop() {
+    const existingDrops = container.querySelectorAll('.falling-water-drop');
+    if (existingDrops.length >= 4) return;
+
+    const drop = document.createElement('div');
+    drop.className = 'falling-water-drop';
+
+    const photoObj = micaellaPhotos[Math.floor(Math.random() * micaellaPhotos.length)];
+    const size = Math.floor(Math.random() * 24) + 68; // 68px a 92px
+    const startX = Math.floor(Math.random() * (window.innerWidth - size - 24)) + 12;
+    const duration = (Math.random() * 3 + 7); // 7s a 10s queda suave
+
+    drop.style.width = `${size}px`;
+    drop.style.height = `${Math.round(size * 1.15)}px`;
+    drop.style.left = `${startX}px`;
+    drop.style.top = `-${size + 20}px`;
+
+    drop.innerHTML = `<img src="${photoObj.src}" alt="Micaella">`;
+
+    let posY = -size - 20;
+    let wobbleAngle = Math.random() * Math.PI * 2;
+    let active = true;
+
+    function fallStep() {
+      if (!active) return;
+      posY += (window.innerHeight / (duration * 60));
+      wobbleAngle += 0.035;
+      const wobbleX = Math.sin(wobbleAngle) * 14;
+
+      drop.style.transform = `translate3d(${wobbleX}px, ${posY}px, 0)`;
+
+      if (posY > window.innerHeight - 70) {
+        popDrop(drop, photoObj, false);
+        active = false;
+        return;
+      }
+
+      requestAnimationFrame(fallStep);
+    }
+
+    drop.addEventListener('click', (e) => {
+      e.stopPropagation();
+      active = false;
+      popDrop(drop, photoObj, true);
+    });
+
+    container.appendChild(drop);
+    requestAnimationFrame(fallStep);
+  }
+
+  setInterval(spawnWaterDrop, 3400);
+  setTimeout(spawnWaterDrop, 800);
+  setTimeout(spawnWaterDrop, 2200);
+}
+
+function popDrop(dropEl, photoObj, openLightbox) {
+  if (!dropEl || dropEl.dataset.popped) return;
+  dropEl.dataset.popped = 'true';
+
+  const rect = dropEl.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  createWaterSplash(centerX, centerY);
+
+  dropEl.classList.add('popping');
+
+  setTimeout(() => {
+    if (dropEl.parentNode) dropEl.parentNode.removeChild(dropEl);
+  }, 340);
+
+  if (openLightbox) {
+    openDropLightbox(photoObj.src, photoObj.caption);
+  }
+}
+
+function createWaterSplash(x, y) {
+  const container = document.body;
+  const particleCount = 8;
+  for (let i = 0; i < particleCount; i++) {
+    const p = document.createElement('div');
+    p.className = 'water-splash-particle';
+    const angle = (i / particleCount) * Math.PI * 2 + (Math.random() * 0.4);
+    const dist = Math.random() * 35 + 20;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    const pSize = Math.random() * 5 + 6;
+
+    p.style.width = `${pSize}px`;
+    p.style.height = `${pSize}px`;
+    p.style.left = `${x}px`;
+    p.style.top = `${y}px`;
+    p.style.setProperty('--dx', `${dx}px`);
+    p.style.setProperty('--dy', `${dy}px`);
+
+    container.appendChild(p);
+    setTimeout(() => {
+      if (p.parentNode) p.parentNode.removeChild(p);
+    }, 550);
+  }
+}
+
+// =========================================
+// ÁLBUM DE GOTAS D'ÁGUA ESTOURO INTERATIVO
+// =========================================
+function initWaterAlbum() {
+  const grid = document.getElementById('water-drops-grid');
+  if (!grid) return;
+
+  grid.innerHTML = micaellaPhotos.map((photo, i) => `
+    <div class="grid-water-drop" onclick="handleGridDropClick(this, '${photo.src}', '${escapeHtml(photo.caption)}')">
+      <img src="${photo.src}" alt="Micaella ${i + 1}" loading="lazy">
+      <span class="pop-hint">💧</span>
+    </div>
+  `).join('');
+}
+
+function handleGridDropClick(el, src, caption) {
+  const rect = el.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+
+  createWaterSplash(x, y);
+
+  el.style.transform = 'scale(1.22)';
+  setTimeout(() => {
+    el.style.transform = '';
+    openDropLightbox(src, caption);
+  }, 160);
+}
+
+function openDropLightbox(src, caption) {
+  const modal = document.getElementById('drop-lightbox-modal');
+  const img = document.getElementById('lightbox-img');
+  const captionEl = document.getElementById('lightbox-caption');
+  if (!modal || !img) return;
+
+  img.src = src;
+  if (captionEl) captionEl.innerText = caption || 'Micaella - 4 Aninhos! 🌺';
+  modal.style.display = 'flex';
+}
+
+function closeDropLightbox() {
+  const modal = document.getElementById('drop-lightbox-modal');
+  if (modal) modal.style.display = 'none';
 }
 
 // Configurar Link do Google Calendar

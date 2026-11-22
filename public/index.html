@@ -25,6 +25,9 @@
     <span class="float-item b8">🌺</span>
   </div>
 
+  <!-- Camada de Gotas d'Água Mágicas Caindo com as Fotos da Micaella -->
+  <div id="water-drops-container" class="water-drops-layer"></div>
+
   <!-- Player Flutuante da Música da Moana -->
   <div class="music-player-bar" id="music-bar">
     <button type="button" id="btn-toggle-music" class="music-pill-btn" aria-label="Tocar Música">
@@ -49,6 +52,7 @@
       <!-- Moldura Tropical com a Foto da Aniversariante que funciona como Botão Play -->
       <div class="photo-wrapper">
         <div class="photo-frame" id="photo-music-btn" role="button" tabindex="0" title="Toque na foto da Micaella para ouvir a música!">
+          <div class="water-drop-ripple" id="water-drop-ripple"></div>
           <img id="child-photo" src="aniversariante.jpg" alt="Foto da Aniversariante Micaella" class="child-img">
           
           <!-- Botão Play sobreposto na foto -->
@@ -63,6 +67,9 @@
           <div class="frame-decoration decor-bottom-left">🐚</div>
           <div class="frame-decoration decor-top-right">✨</div>
         </div>
+
+        <!-- Indicador de Fotos Passando -->
+        <div class="photo-dots" id="photo-dots"></div>
 
         <!-- Legenda informativa em destaque -->
         <div class="photo-caption-pill" id="photo-caption-pill" role="button" tabindex="0">
@@ -174,6 +181,21 @@
         <p id="event-description">
           Se no dia tiver sol, teremos piscina liberada a partir das 10:00 da manhã! Traga roupa de banho e toalha para se refrescar. O corte do bolo será às 16:00 da tarde! Venha comemorar esses 4 aninhos inesquecíveis com a gente!
         </p>
+      </div>
+    </section>
+
+    <!-- Álbum Mágico: Gotas d'Água com Fotos da Micaella -->
+    <section class="card water-album-card" id="water-album-section">
+      <div class="water-album-header">
+        <span class="water-drop-icon">💧✨</span>
+        <h2 class="section-title">Gotas de Amor da Micaella</h2>
+        <p class="water-album-subtext">
+          Toque nas gotas d'água para <strong>estourar</strong> e ver a foto ampliada! 🌺🌊
+        </p>
+      </div>
+
+      <div class="water-drops-grid" id="water-drops-grid">
+        <!-- Renderizado dinamicamente via JS com as fotos -->
       </div>
     </section>
 
@@ -310,6 +332,16 @@
           Fechar
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal para Foto Estourada / Visualizador Lightbox -->
+  <div id="drop-lightbox-modal" class="modal-backdrop" style="display: none;" onclick="closeDropLightbox()">
+    <div class="lightbox-card" onclick="event.stopPropagation()">
+      <button type="button" class="lightbox-close" onclick="closeDropLightbox()" aria-label="Fechar">&times;</button>
+      <div class="lightbox-water-ring"></div>
+      <img id="lightbox-img" src="" alt="Micaella" class="lightbox-photo">
+      <p id="lightbox-caption" class="lightbox-caption">Micaella - 4 Aninhos! 🌺</p>
     </div>
   </div>
 
