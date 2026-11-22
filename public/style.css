@@ -1053,12 +1053,131 @@ body {
   gap: 10px;
 }
 
-/* Player de Música Flutuante da Moana */
+/* Player de Música Flutuante da Moana e Botão do Painel */
 .music-player-bar {
   position: fixed;
   top: 14px;
   right: 14px;
   z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* Botão Pequeno para Acesso ao Painel de Controle (Abaixo da Música) */
+.admin-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(0, 168, 150, 0.35);
+  border-radius: 30px;
+  padding: 5px 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #2D3748;
+  transition: all 0.22s ease;
+  user-select: none;
+}
+
+.admin-quick-btn:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  border-color: #00A896;
+  box-shadow: 0 6px 16px rgba(0, 168, 150, 0.3);
+  color: #00796B;
+}
+
+.admin-quick-btn:active {
+  transform: scale(0.96);
+}
+
+.admin-quick-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.admin-quick-text {
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .music-player-bar {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+  .music-pill-btn {
+    padding: 6px 12px;
+    font-size: 0.82rem;
+  }
+  .admin-quick-btn {
+    padding: 4px 10px;
+    font-size: 0.76rem;
+  }
+}
+
+/* Modal de Senha do Painel de Controle */
+.admin-pwd-card {
+  max-width: 400px;
+  position: relative;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.pwd-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.admin-pwd-field {
+  padding-right: 44px !important;
+  font-size: 1.05rem !important;
+  letter-spacing: 1px;
+}
+
+.btn-toggle-pwd-vis {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.15rem;
+  padding: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.btn-toggle-pwd-vis:hover {
+  opacity: 1;
+}
+
+.admin-pwd-error-msg {
+  color: #E53E3E;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-top: 8px;
+  background: #FFF5F5;
+  border: 1px solid #FEB2B2;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.shake {
+  animation: shakeAnim 0.4s ease-in-out;
+}
+
+@keyframes shakeAnim {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
 }
 
 .music-pill-btn {

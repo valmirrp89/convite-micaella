@@ -118,6 +118,7 @@
       </div>
       <div class="admin-nav">
         <a href="index.html" class="btn btn-outline">👈 Ver Convite</a>
+        <button type="button" class="btn btn-ghost" onclick="logoutAdmin()" style="border: 1px solid #CBD5E0; color: #E53E3E; font-weight: 700;">🔒 Bloquear / Sair</button>
       </div>
     </div>
 
@@ -245,6 +246,16 @@
             <label for="description">Mensagem / Dicas para os Convidados</label>
             <textarea id="description" name="description" rows="3"></textarea>
           </div>
+
+          <div class="form-group col-span-2" style="background: #FFFDF0; padding: 16px; border-radius: 12px; border: 1.5px solid #F6E05E; margin-top: 8px;">
+            <label for="adminPassword" style="font-weight: 800; color: #744210; font-size: 1rem;">
+              🔑 Senha de Acesso ao Painel de Controle
+            </label>
+            <input type="text" id="adminPassword" name="adminPassword" placeholder="Ex: Micaella2022" style="background: white; font-weight: 700; font-size: 1.05rem; border-color: #ECC94B;">
+            <small style="color: #744210; display: block; margin-top: 6px; font-size: 0.88rem;">
+              Esta é a senha solicitada no botão pequeno <strong>"⚙️🔒 Painel"</strong> na página do convite para autorizar o acesso a este dashboard.
+            </small>
+          </div>
         </div>
 
         <button type="submit" id="btn-save-event" class="btn btn-primary" style="margin-top: 14px; width: 100%;">
@@ -258,14 +269,100 @@
 
   <div id="toast" class="toast"></div>
 
+  <!-- Modal Gate de Segurança: Bloqueia acesso direto sem senha -->
+  <div id="admin-gate-overlay" class="modal-backdrop" style="display: none; background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(8px); z-index: 99999;">
+    <div class="modal-card" style="max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+      <div class="modal-icon" style="font-size: 3rem; margin-bottom: 8px;">🔐</div>
+      <h2 class="modal-title" style="font-size: 1.6rem; color: #2D3748;">Acesso Restrito</h2>
+      <p class="modal-text" style="color: #4A5568; margin-bottom: 18px; font-size: 0.95rem;">
+        Digite a senha do organizador para acessar os convidados e configurações da festa da Micaella:
+      </p>
+
+      <form id="gate-pwd-form" onsubmit="handleGateAuth(event)">
+        <div class="form-group" style="text-align: left; margin-bottom: 16px;">
+          <input type="password" id="gate-pwd-input" class="form-control" placeholder="Digite a senha..." style="font-size: 1.1rem; text-align: center; font-weight: 700; letter-spacing: 2px;" required autofocus>
+          <div id="gate-pwd-error" style="display: none; color: #E53E3E; font-size: 0.88rem; font-weight: 700; margin-top: 8px; background: #FFF5F5; border: 1px solid #FEB2B2; padding: 8px; border-radius: 8px; text-align: center;">
+            ❌ Senha incorreta! Tente novamente.
+          </div>
+        </div>
+
+        <div class="modal-actions" style="display: flex; flex-direction: column; gap: 8px;">
+          <button type="submit" class="btn btn-primary btn-block" style="padding: 12px; font-size: 1.05rem;">
+            🔓 Entrar no Painel
+          </button>
+          <a href="index.html" class="btn btn-ghost btn-block" style="font-size: 0.9rem; padding: 8px; text-decoration: none; text-align: center;">
+            👈 Voltar ao Convite
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     let currentEvent = {};
 
     document.addEventListener('DOMContentLoaded', async () => {
       await loadAdminEvent();
+      checkAdminAuth();
       await loadAdminGuests();
       setupForm();
     });
+
+    function checkAdminAuth() {
+      const isAuth = sessionStorage.getItem('admin_authenticated') === 'true';
+      const overlay = document.getElementById('admin-gate-overlay');
+      const container = document.querySelector('.admin-container');
+      if (!isAuth) {
+        if (overlay) overlay.style.display = 'flex';
+        if (container) container.style.filter = 'blur(6px)';
+        const savedPwd = localStorage.getItem('saved_admin_password');
+        const input = document.getElementById('gate-pwd-input');
+        if (savedPwd && input) {
+          input.value = savedPwd;
+        }
+        setTimeout(() => {
+          if (input) {
+            input.focus();
+            if (savedPwd) input.select();
+          }
+        }, 120);
+        return false;
+      } else {
+        if (overlay) overlay.style.display = 'none';
+        if (container) container.style.filter = 'none';
+        return true;
+      }
+    }
+
+    function handleGateAuth(e) {
+      e.preventDefault();
+      const input = document.getElementById('gate-pwd-input');
+      const err = document.getElementById('gate-pwd-error');
+      const val = (input ? input.value : '').trim();
+      const correct = String((currentEvent && currentEvent.adminPassword) || 'Micaella2022');
+
+      if (val === correct) {
+        localStorage.setItem('saved_admin_password', val);
+        sessionStorage.setItem('admin_authenticated', 'true');
+        checkAdminAuth();
+      } else {
+        if (err) {
+          err.style.display = 'block';
+          err.classList.remove('shake');
+          void err.offsetWidth;
+          err.classList.add('shake');
+        }
+        if (input) {
+          input.select();
+          input.focus();
+        }
+      }
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('admin_authenticated');
+      window.location.href = 'index.html';
+    }
 
     async function loadAdminEvent() {
       try {

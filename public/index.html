@@ -28,7 +28,7 @@
   <!-- Camada de Gotas d'Água Mágicas Caindo com as Fotos da Micaella -->
   <div id="water-drops-container" class="water-drops-layer"></div>
 
-  <!-- Player Flutuante da Música da Moana -->
+  <!-- Player Flutuante da Música da Moana e Botão do Painel -->
   <div class="music-player-bar" id="music-bar">
     <button type="button" id="btn-toggle-music" class="music-pill-btn" aria-label="Tocar Música">
       <span class="music-note-icon" id="music-note-icon">🎵</span>
@@ -42,6 +42,12 @@
     <audio id="bg-music" loop preload="auto">
       <source src="moana-musica.mp3" type="audio/mpeg">
     </audio>
+
+    <!-- Botão pequeno com ícone para acessar o Painel de Controle com Senha -->
+    <button type="button" id="btn-open-admin-pwd" class="admin-quick-btn" title="Acessar Painel de Controle (Exige Senha)" onclick="openAdminPasswordModal()">
+      <span class="admin-quick-icon">⚙️🔒</span>
+      <span class="admin-quick-text">Painel</span>
+    </button>
   </div>
 
   <div class="container">
@@ -345,6 +351,46 @@
     </div>
   </div>
 
-  <script src="app.js?v=2"></script>
+  <!-- Modal de Senha para Acesso ao Painel / Dashboard -->
+  <div id="admin-pwd-modal" class="modal-backdrop" style="display: none;" onclick="closeAdminPasswordModal(event)">
+    <div class="modal-card admin-pwd-card" onclick="event.stopPropagation()">
+      <button type="button" class="lightbox-close" onclick="closeAdminPasswordModal()" aria-label="Fechar">&times;</button>
+      <div class="modal-icon">🔐</div>
+      <h3 class="modal-title">Painel de Controle</h3>
+      <p class="modal-text" style="margin-bottom: 16px; color: #4A5568;">
+        Área restrita aos organizadores da festa.<br>Digite a senha para acessar a lista de confirmados e configurações:
+      </p>
+      
+      <form id="admin-pwd-form" onsubmit="handleAdminPasswordSubmit(event)">
+        <div class="form-group" style="text-align: left; margin-bottom: 14px;">
+          <label for="admin-pwd-input" style="font-weight: 700; color: #2D3748; margin-bottom: 6px; display: block;">
+            🔑 Senha de Acesso:
+          </label>
+          <div class="pwd-input-wrap">
+            <input type="password" id="admin-pwd-input" class="form-control admin-pwd-field" placeholder="Digite a senha..." autocomplete="current-password" required>
+            <button type="button" class="btn-toggle-pwd-vis" onclick="togglePasswordVisibility('admin-pwd-input', this)" title="Mostrar/ocultar senha">👁️</button>
+          </div>
+          <div class="pwd-remember-wrap" style="display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 0.9rem; color: #4A5568;">
+            <input type="checkbox" id="admin-pwd-remember" style="width: 17px; height: 17px; cursor: pointer; accent-color: #00A896;" checked>
+            <label for="admin-pwd-remember" style="cursor: pointer; user-select: none;">Salvar senha neste dispositivo</label>
+          </div>
+          <div id="admin-pwd-error" class="admin-pwd-error-msg" style="display: none;">
+            ❌ Senha incorreta! Tente novamente.
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary btn-block" style="padding: 12px; font-size: 1.05rem;">
+            🔓 Entrar no Painel
+          </button>
+          <button type="button" class="btn btn-ghost btn-block" onclick="closeAdminPasswordModal()" style="font-size: 0.9rem; padding: 8px;">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js?v=3"></script>
 </body>
 </html>

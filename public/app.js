@@ -15,7 +15,8 @@ let eventData = {
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=Rua+Ouro+Velho%2C+116",
   description: "Se no dia tiver sol, teremos piscina liberada a partir das 10:00 da manhã! Traga roupa de banho e toalha para se refrescar. O corte do bolo será às 16:00 da tarde! Venha comemorar esses 4 aninhos inesquecíveis da nossa linda Micaella!",
   rsvpDeadline: "12/12/2026",
-  contactPhone: "(11) 99999-8888"
+  contactPhone: "(11) 99999-8888",
+  adminPassword: "Micaella2022"
 };
 
 let guestsList = [];
@@ -856,6 +857,89 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+/* =========================================
+   ACESSO AO PAINEL DE CONTROLE COM SENHA
+   ========================================= */
+function openAdminPasswordModal() {
+  const modal = document.getElementById('admin-pwd-modal');
+  const input = document.getElementById('admin-pwd-input');
+  const errorMsg = document.getElementById('admin-pwd-error');
+  const rememberCheckbox = document.getElementById('admin-pwd-remember');
+  if (errorMsg) errorMsg.style.display = 'none';
+
+  // Carrega senha salva se houver
+  const savedPwd = localStorage.getItem('saved_admin_password');
+  if (savedPwd) {
+    if (input) input.value = savedPwd;
+    if (rememberCheckbox) rememberCheckbox.checked = true;
+  } else {
+    if (input) input.value = '';
+    if (rememberCheckbox) rememberCheckbox.checked = true;
+  }
+
+  if (modal) {
+    modal.style.display = 'flex';
+    setTimeout(() => {
+      if (input) {
+        input.focus();
+        if (savedPwd) input.select();
+      }
+    }, 120);
+  }
+}
+
+function closeAdminPasswordModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  const modal = document.getElementById('admin-pwd-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (btn) btn.innerText = '🙈';
+  } else {
+    input.type = 'password';
+    if (btn) btn.innerText = '👁️';
+  }
+}
+
+function handleAdminPasswordSubmit(e) {
+  e.preventDefault();
+  const input = document.getElementById('admin-pwd-input');
+  const errorMsg = document.getElementById('admin-pwd-error');
+  const rememberCheckbox = document.getElementById('admin-pwd-remember');
+  const entered = (input ? input.value : '').trim();
+  const correctPassword = String((eventData && eventData.adminPassword) || 'Micaella2022');
+
+  if (entered === correctPassword) {
+    // Salvar ou remover senha salva no aparelho
+    if (rememberCheckbox && rememberCheckbox.checked) {
+      localStorage.setItem('saved_admin_password', entered);
+    } else {
+      localStorage.removeItem('saved_admin_password');
+    }
+
+    // Autenticado com sucesso na sessão
+    sessionStorage.setItem('admin_authenticated', 'true');
+    sessionStorage.setItem('admin_auth_time', Date.now().toString());
+    window.location.href = 'admin.html';
+  } else {
+    if (errorMsg) {
+      errorMsg.style.display = 'block';
+      errorMsg.classList.remove('shake');
+      void errorMsg.offsetWidth;
+      errorMsg.classList.add('shake');
+    }
+    if (input) {
+      input.select();
+      input.focus();
+    }
+  }
 }
 
 /* =========================================
