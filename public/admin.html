@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Organizador - Festa Infantil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .admin-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 2rem;
+      color: #2D3748;
+    }
+    .admin-nav {
+      display: flex;
+      gap: 10px;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    th {
+      background: #F7FAFC;
+      font-weight: 700;
+      color: #4A5568;
+    }
+    tr:hover {
+      background: #F8FAFC;
+    }
+    .btn-delete {
+      background: #FED7D7;
+      color: #9B2C2C;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+    .btn-delete:hover {
+      background: #FEB2B2;
+    }
+    .btn-print {
+      background: #EDF2F7;
+      color: #2D3748;
+    }
+    .btn-export {
+      background: #38A169;
+      color: white;
+    }
+    .btn-export:hover {
+      background: #2F855A;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 768px) {
+      .admin-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .col-span-2 {
+        grid-column: span 2;
+      }
+    }
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .card {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+      }
+      table {
+        font-size: 11pt;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header no-print">
+      <div>
+        <h1 class="admin-title">⚙️ Painel do Organizador</h1>
+        <p style="color: #718096;">Edite os dados da festa e gerencie os convidados confirmados</p>
+      </div>
+      <div class="admin-nav">
+        <a href="index.html" class="btn btn-outline">👈 Ver Convite</a>
+      </div>
+    </div>
+
+    <!-- Estatísticas Rápidas -->
+    <div class="card" style="margin-bottom: 20px;">
+      <h2 class="section-title">📊 Resumo de Confirmados</h2>
+      <div class="stats-pills" id="admin-stats" style="font-size: 1.1rem; gap: 12px;">
+        <span class="stat-pill">Carregando...</span>
+      </div>
+    </div>
+
+    <!-- Lista e Gestão de Convidados -->
+    <div class="card" style="margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;" class="no-print">
+        <h2 class="section-title" style="margin: 0;">📋 Lista de Convidados</h2>
+        <div style="display: flex; gap: 8px;">
+          <a href="/api/guests/export" class="btn btn-export">📥 Baixar Excel / CSV</a>
+          <button type="button" class="btn btn-print" onclick="window.print()">🖨️ Imprimir Lista</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="guests-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Adultos</th>
+              <th>Crianças</th>
+              <th>Total</th>
+              <th>Acompanhantes</th>
+              <th>Recado</th>
+              <th class="no-print">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="guests-tbody">
+            <tr><td colspan="7" style="text-align: center;">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Formulário de Edição dos Dados da Festa -->
+    <div class="card no-print">
+      <h2 class="section-title">✏️ Personalizar Dados da Festa</h2>
+      <p style="color: #718096; margin-bottom: 16px;">Altere as informações abaixo e clique em Salvar para atualizar o convite instantaneamente.</p>
+
+      <form id="edit-event-form">
+        <div class="admin-grid">
+          <div class="form-group">
+            <label for="childName">Nome do Aniversariante *</label>
+            <input type="text" id="childName" name="childName" required>
+          </div>
+
+          <div class="form-group">
+            <label for="age">Idade / Anos *</label>
+            <input type="text" id="age" name="age" placeholder="Ex: 5 anos" required>
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="title">Título do Convite</label>
+            <input type="text" id="title" name="title" placeholder="Ex: 5º Aniversário do Lucas! 🎈🎂">
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="subtitle">Frase / Subtítulo</label>
+            <input type="text" id="subtitle" name="subtitle">
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="photoUrl">Arquivo / URL da Foto da Aniversariante</label>
+            <input type="text" id="photoUrl" name="photoUrl" placeholder="aniversariante.jpg">
+          </div>
+
+          <div class="form-group">
+            <label for="date">Data da Festa (AAAA-MM-DD) *</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+
+          <div class="form-group">
+            <label for="time">Horário de Início *</label>
+            <input type="time" id="time" name="time" required>
+          </div>
+
+          <div class="form-group">
+            <label for="endTime">Horário de Término</label>
+            <input type="time" id="endTime" name="endTime">
+          </div>
+
+          <div class="form-group">
+            <label for="cakeTime">Horário do Bolo / Parabéns</label>
+            <input type="time" id="cakeTime" name="cakeTime">
+          </div>
+
+          <div class="form-group">
+            <label for="rsvpDeadline">Prazo para Confirmar Presença</label>
+            <input type="text" id="rsvpDeadline" name="rsvpDeadline" placeholder="Ex: 05/12/2026">
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="locationName">Nome do Local / Salão / Casa *</label>
+            <input type="text" id="locationName" name="locationName" required>
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="address">Endereço Completo *</label>
+            <input type="text" id="address" name="address" required>
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="mapsUrl">Link do Google Maps / Waze</label>
+            <input type="text" id="mapsUrl" name="mapsUrl" placeholder="https://maps.google.com/...">
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="whatsappGroupUrl">Link de Convite do Grupo no WhatsApp</label>
+            <input type="text" id="whatsappGroupUrl" name="whatsappGroupUrl" placeholder="https://chat.whatsapp.com/...">
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="whatsappGroupName">Nome do Grupo no WhatsApp</label>
+            <input type="text" id="whatsappGroupName" name="whatsappGroupName" placeholder="aniver micaella">
+          </div>
+
+          <div class="form-group col-span-2">
+            <label for="description">Mensagem / Dicas para os Convidados</label>
+            <textarea id="description" name="description" rows="3"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-save-event" class="btn btn-primary" style="margin-top: 14px; width: 100%;">
+          💾 Salvar Alterações no Convite
+        </button>
+
+        <div id="admin-status" class="status-message" style="display: none;"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    let currentEvent = {};
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadAdminEvent();
+      await loadAdminGuests();
+      setupForm();
+    });
+
+    async function loadAdminEvent() {
+      try {
+        const res = await fetch('/api/event');
+        if (res.ok) {
+          currentEvent = await res.json();
+          fillForm(currentEvent);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function fillForm(ev) {
+      for (const key in ev) {
+        const input = document.getElementById(key);
+        if (input) input.value = ev[key] || '';
+      }
+    }
+
+    async function loadAdminGuests() {
+      try {
+        const res = await fetch('/api/guests');
+        if (res.ok) {
+          const data = await res.json();
+          renderAdminStats(data.stats);
+          renderAdminTable(data.guests);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderAdminStats(stats) {
+      const el = document.getElementById('admin-stats');
+      if (!el || !stats) return;
+      el.innerHTML = `
+        <span class="stat-pill"><strong>${stats.totalConfirmations || 0}</strong> Famílias/Grupos</span>
+        <span class="stat-pill"><strong>${stats.totalAdults || 0}</strong> Adultos</span>
+        <span class="stat-pill"><strong>${stats.totalChildren || 0}</strong> Crianças</span>
+        <span class="stat-pill" style="background:#FFE3EC; color:#D81B60; font-weight:700;"><strong>${stats.totalPeople || 0}</strong> Pessoas no Total</span>
+      `;
+    }
+
+    function renderAdminTable(guests) {
+      const tbody = document.getElementById('guests-tbody');
+      if (!tbody) return;
+
+      if (!guests || guests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #718096; padding: 20px;">Nenhum convidado confirmado ainda.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = guests.map(g => {
+        const total = (Number(g.adults) || 1) + (Number(g.children) || 0);
+        return `
+          <tr>
+            <td><strong>${escapeHtml(g.name)}</strong></td>
+            <td>${g.adults}</td>
+            <td>${g.children}</td>
+            <td><strong>${total}</strong></td>
+            <td>${escapeHtml(g.companionNames || '-')}</td>
+            <td style="font-style: italic;">${escapeHtml(g.message || '-')}</td>
+            <td class="no-print">
+              <button class="btn-delete" onclick="deleteGuest('${g.id}')">Excluir</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function deleteGuest(id) {
+      if (!confirm('Deseja realmente remover este convidado da lista?')) return;
+      try {
+        const res = await fetch(`/api/guests/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Convidado removido!');
+          await loadAdminGuests();
+        }
+      } catch (e) {
+        alert('Erro ao excluir convidado.');
+      }
+    }
+
+    function setupForm() {
+      const form = document.getElementById('edit-event-form');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const updated = Object.fromEntries(formData.entries());
+
+        const btn = document.getElementById('btn-save-event');
+        btn.disabled = true;
+        btn.innerText = 'Salvando...';
+
+        try {
+          const res = await fetch('/api/event', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updated)
+          });
+          if (res.ok) {
+            showToast('✅ Informações atualizadas com sucesso!');
+            const status = document.getElementById('admin-status');
+            status.className = 'status-message success';
+            status.innerText = 'As alterações foram salvas e já estão visíveis no convite!';
+            status.style.display = 'block';
+            setTimeout(() => { status.style.display = 'none'; }, 4000);
+          }
+        } catch (e) {
+          alert('Erro ao salvar alterações.');
+        } finally {
+          btn.disabled = false;
+          btn.innerText = '💾 Salvar Alterações no Convite';
+        }
+      });
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.innerText = text;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
