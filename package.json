@@ -1,0 +1,9 @@
+{
+  "name": "convite-festa-infantil",
+  "version": "1.0.0",
+  "description": "Site de convite interativo da Micaella - Moana",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
