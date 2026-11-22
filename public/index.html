@@ -304,39 +304,48 @@
   <!-- Notificação Toast -->
   <div id="toast" class="toast"></div>
 
-  <!-- Modal de Sucesso com Envio para o Grupo do WhatsApp -->
+  <!-- Modal de Sucesso com Envio dos Nomes para o WhatsApp -->
   <div id="rsvp-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card">
       <div class="modal-icon">🌺🎉</div>
       <h3 class="modal-title">Presença Confirmada!</h3>
-      <p id="modal-guest-summary" class="modal-text">Oba! Seu nome foi registrado na lista de confirmados da festa!</p>
+      <p id="modal-guest-summary" class="modal-text">Oba! Seu nome foi registrado na lista da festa da Micaella!</p>
       
       <div class="modal-whatsapp-box">
-        <div class="modal-box-header">
-          <span>📲 Grupo no WhatsApp: <strong>aniver micaella</strong></span>
+        <div class="modal-box-header" style="display: flex; align-items: center; justify-content: space-between;">
+          <span>📲 <strong>Nomes prontos para enviar:</strong></span>
+          <span style="font-size: 0.8rem; background: #C6F6D5; color: #22543D; padding: 2px 8px; border-radius: 12px; font-weight: 700;">Mensagem Pronta</span>
         </div>
-        <div class="modal-copy-alert">
-          ✅ <strong>Os nomes de quem vai foram copiados!</strong>
-        </div>
-        <p class="modal-box-desc">
-          Ao clicar no botão verde abaixo, o grupo <strong>"aniver micaella"</strong> vai abrir no seu WhatsApp. Basta <strong>segurar o dedo no campo de mensagem e tocar em COLAR!</strong>
-        </p>
-        <div id="modal-preview-msg" class="modal-preview-text"></div>
+        <div id="modal-preview-msg" class="modal-preview-text" style="margin-top: 8px;"></div>
       </div>
 
       <div class="modal-actions">
-        <a id="btn-modal-open-group" href="https://chat.whatsapp.com/FdhFkFGozFEDvBZ2woKcJ0" target="_blank" class="btn btn-whatsapp btn-block" style="font-size: 1.15rem; padding: 14px;">
-          👉 Abrir o Grupo "aniver micaella" no WhatsApp
+        <!-- BOTÃO PRINCIPAL: Abre o WhatsApp com a mensagem pronta dos nomes -->
+        <a id="btn-modal-send-msg" href="#" target="_blank" class="btn btn-whatsapp btn-block btn-pulse-green" style="font-size: 1.15rem; padding: 15px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <span>📲 Enviar Nomes no WhatsApp</span>
         </a>
-        <a id="btn-modal-send-msg" href="#" target="_blank" class="btn btn-outline btn-block">
-          📲 Ou Escolher Conversa com Texto Já Escrito
-        </a>
-        <button id="btn-modal-copy-msg" type="button" class="btn btn-ghost btn-block">
-          📋 Copiar Nomes Novamente
-        </button>
-        <button type="button" class="btn btn-ghost btn-block" onclick="closeRsvpModal()" style="font-size: 0.9rem; padding: 8px;">
-          Fechar
-        </button>
+        <p style="font-size: 0.85rem; color: #4A5568; margin: 4px 0 10px;">
+          ✨ A mensagem com todos os nomes já vai pronta! Basta escolher o grupo ou conversa e tocar em <strong>Enviar</strong>.
+        </p>
+
+        <!-- BOTÃO SECUNDÁRIO: Caso a pessoa também queira entrar no grupo -->
+        <div class="group-join-box" style="margin-top: 10px; padding: 12px; background: #F0FDF4; border: 1.5px dashed #38A169; border-radius: 12px;">
+          <p style="font-size: 0.88rem; color: #22543D; margin-bottom: 8px; font-weight: 700;">
+            🌺 Quer participar do grupo da festa para ver novidades e fotos?
+          </p>
+          <a id="btn-modal-open-group" href="https://chat.whatsapp.com/FdhFkFGozFEDvBZ2woKcJ0" target="_blank" class="btn btn-outline btn-block" style="border-color: #38A169; color: #22543D; font-weight: 700; padding: 10px; text-decoration: none; display: block;">
+            ⛵ Entrar no Grupo "aniver micaella" (Opcional)
+          </a>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 12px;">
+          <button id="btn-modal-copy-msg" type="button" class="btn btn-ghost" style="flex: 1; font-size: 0.85rem; padding: 8px;">
+            📋 Copiar Texto
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="closeRsvpModal()" style="flex: 1; font-size: 0.85rem; padding: 8px;">
+            Fechar
+          </button>
+        </div>
       </div>
     </div>
   </div>

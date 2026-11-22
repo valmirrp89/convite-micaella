@@ -436,42 +436,40 @@ function openRsvpModal(guest) {
     previewEl.innerText = msg;
   }
 
-  // Copia o texto automaticamente para a área de transferência
+  // Copia o texto automaticamente para a área de transferência como backup
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(msg).then(() => {
-      showToast('📋 Nomes de quem vai copiados! Agora é só colar no grupo.');
-    }).catch(() => {});
+    navigator.clipboard.writeText(msg).catch(() => {});
   }
 
   const groupUrl = eventData.whatsappGroupUrl || 'https://chat.whatsapp.com/FdhFkFGozFEDvBZ2woKcJ0';
   const shareUrl = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
-
-  const groupBtn = document.getElementById('btn-modal-open-group');
-  if (groupBtn) {
-    groupBtn.href = groupUrl;
-  }
 
   const sendBtn = document.getElementById('btn-modal-send-msg');
   if (sendBtn) {
     sendBtn.href = shareUrl;
   }
 
+  const groupBtn = document.getElementById('btn-modal-open-group');
+  if (groupBtn) {
+    groupBtn.href = groupUrl;
+  }
+
   const copyBtn = document.getElementById('btn-modal-copy-msg');
   if (copyBtn) {
     copyBtn.onclick = () => {
       navigator.clipboard.writeText(msg).then(() => {
-        showToast('📋 Nomes copiados com sucesso! Basta colar no grupo.');
+        showToast('📋 Nomes copiados com sucesso!');
       }).catch(() => {
-        showToast('Texto exibido na tela!');
+        showToast('Texto já exibido na tela!');
       });
     };
   }
 
   modal.style.display = 'flex';
 
-  // Abre diretamente o grupo do WhatsApp da Micaella
+  // Abre automaticamente o WhatsApp com a mensagem dos nomes já preenchida
   try {
-    window.open(groupUrl, '_blank');
+    window.open(shareUrl, '_blank');
   } catch (e) {
     console.log('Navegador bloqueou popup automático, o usuário pode clicar no botão verde');
   }
